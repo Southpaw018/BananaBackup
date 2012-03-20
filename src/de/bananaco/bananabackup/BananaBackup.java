@@ -2,7 +2,6 @@ package de.bananaco.bananabackup;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,9 +9,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
 
 /**
  * The main JavaPlugin class for this simple plugin
@@ -89,7 +88,7 @@ public class BananaBackup extends JavaPlugin {
 	 */
 	public void loadConfiguration() {
 		// The default config.yml
-		Configuration c = getConfiguration();
+		FileConfiguration c = this.getConfig();
 		
 		interval = c.getDouble("backup-interval-hours", 12.0);
 		intervalBetween = c.getInt("interval-between", intervalBetween);
@@ -97,13 +96,12 @@ public class BananaBackup extends JavaPlugin {
 		broadcast = c.getBoolean("broadcast-message", true);
 		plugins  = c.getBoolean("backup-plugins", true);
 		backupFile  = c.getString("backup-file","backups/");
-		backupWorlds = c
-				.getStringList("backup-worlds", new ArrayList<String>());
+		backupWorlds = c.getStringList("backup-worlds");
 		// This is just to make sure there is something in the config as an example
 		if (backupWorlds.size() == 0)
 			backupWorlds.add(getServer().getWorlds().get(0).getName());
 		// Make sure our values are set
-		c.setProperty("backup-worlds", backupWorlds);
+		/*c.setProperty("backup-worlds", backupWorlds);
 		c.setProperty("interval-between", intervalBetween);
 		c.setProperty("backup-interval-hours", interval);
 		c.setProperty("backup-all-worlds", allWorlds);
@@ -111,7 +109,7 @@ public class BananaBackup extends JavaPlugin {
 		c.setProperty("backup-plugins", plugins);
 		c.setProperty("backup-file", backupFile);
 		// Save to write the changes to disk
-		c.save();
+		c.save();*/
 	}
 	/**
 	 * A simple method to make getting our runnable neater in onEnable();
