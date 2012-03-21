@@ -33,16 +33,14 @@ public class BackupThread extends Thread {
 	 * @throws Exception
 	 */
 	public BackupThread(File world) throws Exception {
-		System.out.println("Backing up "+world.getCanonicalPath());
+		BananaBackup.log.info("Backing up " + world.getCanonicalPath());
 		this.world = world;
-		this.file = new File(BananaBackup.backupFile + world.getName() + "/"
-				+ BananaBackup.format() + ".zip");
+		this.file = new File(BananaBackup.backupFile + world.getName() + "/" + BananaBackup.format() + ".zip");
 		if (!file.exists()) {
 			file.getParentFile().mkdirs();
 			file.createNewFile();
 		}
-		this.os = new ZipOutputStream(new DataOutputStream(
-				new FileOutputStream(file)));
+		this.os = new ZipOutputStream(new DataOutputStream(new FileOutputStream(file)));
 	}
 
 	/**
@@ -85,8 +83,7 @@ public class BackupThread extends Thread {
 		ZipEntry e = new ZipEntry(name);
 		os.putNextEntry(e);
 		// Reads from the original file, per byte
-		BufferedInputStream is = new BufferedInputStream(new DataInputStream(
-				new FileInputStream(input)));
+		BufferedInputStream is = new BufferedInputStream(new DataInputStream(new FileInputStream(input)));
 		int isb = 0;
 		while ((isb = is.read()) >= 0)
 			// Writes to our zip, per byte
@@ -96,5 +93,4 @@ public class BackupThread extends Thread {
 		// Closes the zipentry
 		os.closeEntry();
 	}
-
 }
