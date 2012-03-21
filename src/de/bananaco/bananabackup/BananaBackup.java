@@ -69,8 +69,7 @@ public class BananaBackup extends JavaPlugin {
 		// Calculate the interval in ticks
 		double ticks = tph * interval;
 		// Schedule our task
-		getServer().getScheduler().scheduleAsyncRepeatingTask(this, doChecks(),
-				(long) ticks, (long) ticks);
+		getServer().getScheduler().scheduleAsyncRepeatingTask(this, doChecks(), (long) ticks, (long) ticks);
 		// Print enabled message
 		log.info("[BananaBackup] Enabled. Backup interval " + interval + " hours.");
 	}
@@ -122,8 +121,7 @@ public class BananaBackup extends JavaPlugin {
 				BackupThread bt;
 				// Should we let people know it's starting?
 				if(broadcast)
-					getServer().broadcastMessage(ChatColor.BLUE
-								+ "[BananaBackup] Backup starting. Expect a little lag.");
+					getServer().broadcastMessage(ChatColor.BLUE + "[BananaBackup] Backup starting. Expect a little lag.");
 				// Loop through the worlds
 				for (World world : getServer().getWorlds())
 					try {
@@ -156,8 +154,7 @@ public class BananaBackup extends JavaPlugin {
 					}
 				// Should we let people know it's done?
 				if(broadcast)
-				getServer().broadcastMessage(ChatColor.BLUE
-						+ "[BananaBackup] Backup complete.");
+				getServer().broadcastMessage(ChatColor.BLUE + "[BananaBackup] Backup complete.");
 			}
 		};
 	}
