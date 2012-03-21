@@ -1,0 +1,15 @@
+backup-interval-hours: 4.0
+backup-plugins: false
+
+backup-worlds:
+  - world
+
+#Overrides backup-worlds
+backup-all-worlds: true
+
+interval-between: 100
+
+#Don't forget the trailing slash!
+backup-file: backups/
+
+broadcast-message: true

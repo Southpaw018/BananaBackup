@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -45,6 +46,8 @@ public class BananaBackup extends JavaPlugin {
 	
 	public static int intervalBetween = 100;
 
+	public static Logger log;
+
 	/**
 	 * Just your average onDisable();
 	 */
@@ -52,13 +55,15 @@ public class BananaBackup extends JavaPlugin {
 		// Cancel our scheduled task
 		getServer().getScheduler().cancelTasks(this);
 		// Print disabled message
-		System.out.println("[BananaBackup] Disabled.");
+		log.info("[BananaBackup] Disabled.");
 	}
 
 	/**
 	 * Nothing special here except a scheduler task.
 	 */
 	public void onEnable() {
+		log = Logger.getLogger("Minecraft");
+
 		// Setup the configuration
 		loadConfiguration();
 		// Calculate the interval in ticks
@@ -67,8 +72,7 @@ public class BananaBackup extends JavaPlugin {
 		getServer().getScheduler().scheduleAsyncRepeatingTask(this, doChecks(),
 				(long) ticks, (long) ticks);
 		// Print enabled message
-		System.out.println("[BananaBackup] Enabled. Backup interval "
-				+ interval + " hours.");
+		log.info("[BananaBackup] Enabled. Backup interval " + interval + " hours.");
 	}
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -89,6 +93,7 @@ public class BananaBackup extends JavaPlugin {
 	public void loadConfiguration() {
 		// The default config.yml
 		FileConfiguration c = this.getConfig();
+		if (!new File(this.getDataFolder().toString() + "config.yml").isFile()) saveDefaultConfig();
 		
 		interval = c.getDouble("backup-interval-hours", 12.0);
 		intervalBetween = c.getInt("interval-between", intervalBetween);
@@ -96,20 +101,16 @@ public class BananaBackup extends JavaPlugin {
 		broadcast = c.getBoolean("broadcast-message", true);
 		plugins  = c.getBoolean("backup-plugins", true);
 		backupFile  = c.getString("backup-file","backups/");
+	
+		try {
+			backupWorlds = c.getStringList("backupWorlds");
+		} catch (NullPointerException e) {
+			log.warning("[BananaBackup] Configuration failure while loading backupWorlds. Backups will only run in the first world on the server.");
+		}
 		backupWorlds = c.getStringList("backup-worlds");
 		// This is just to make sure there is something in the config as an example
 		if (backupWorlds.size() == 0)
 			backupWorlds.add(getServer().getWorlds().get(0).getName());
-		// Make sure our values are set
-		/*c.setProperty("backup-worlds", backupWorlds);
-		c.setProperty("interval-between", intervalBetween);
-		c.setProperty("backup-interval-hours", interval);
-		c.setProperty("backup-all-worlds", allWorlds);
-		c.setProperty("broadcast-message", broadcast);
-		c.setProperty("backup-plugins", plugins);
-		c.setProperty("backup-file", backupFile);
-		// Save to write the changes to disk
-		c.save();*/
 	}
 	/**
 	 * A simple method to make getting our runnable neater in onEnable();
@@ -175,8 +176,7 @@ public class BananaBackup extends JavaPlugin {
 			return new BackupThread(new File(world.getName()));
 		// Otherwise print an error message
 		else
-			System.out.println("[BananaBackup] Skipping backup for "
-					+ world.getName());
+			log.warning("[BananaBackup] Skipping backup for " + world.getName());
 		return null;
 		} else if(world == null && file != null) {
 			return new BackupThread(file);
